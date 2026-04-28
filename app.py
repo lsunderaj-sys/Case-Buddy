@@ -4,7 +4,7 @@ from cases import CASE_STUDIES
 
 # Setup AI - You will need to add your API Key in Streamlit Secrets
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 st.set_page_config(page_title="Case Buddy | H2 Economics", layout="wide")
 st.title("🎓 Case Buddy: H2 Economics Feedback Assistant")
