@@ -1,0 +1,16 @@
+# Streamlit secrets (Where your API key lives locally)
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# Python folders
+__pycache__/
+*.py[cod]
+
+# Environments (If you use virtual environments)
+venv/
+env/
+.env
+
+# OS specific files
+.DS_Store
+Thumbs.db
