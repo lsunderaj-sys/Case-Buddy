@@ -1,11 +1,20 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from cases import CASE_STUDIES
 
-# Setup AI - You will need to add your API Key in Streamlit Secrets
-genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+# Initialize the new Client
+# Streamlit will automatically pick up your GOOGLE_API_KEY from Secrets
+client = genai.Client()
 
+st.set_page_config(page_title="Case Buddy | H2 Economics", layout="wide")
+# ... (rest of your UI code)
+
+# When you need to generate content later in the code:
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=prompt
+)
+feedback = response.text
 st.set_page_config(page_title="Case Buddy | H2 Economics", layout="wide")
 st.title("🎓 Case Buddy: H2 Economics Feedback Assistant")
 
