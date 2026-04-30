@@ -2,27 +2,18 @@ import streamlit as st
 from google import genai
 from cases import CASE_STUDIES
 
-# Initialize the new Client
-# Streamlit will automatically pick up your GOOGLE_API_KEY from Secrets
-client = genai.Client()
+# 1. Setup AI Client - Streamlit picks up GOOGLE_API_KEY from Secrets
+client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 
-st.set_page_config(page_title="Case Buddy | H2 Economics", layout="wide")
-# ... (rest of your UI code)
-
-# When you need to generate content later in the code:
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents=prompt
-)
-feedback = response.text
+# 2. Page Configuration (Must only be called ONCE at the very top)
 st.set_page_config(page_title="Case Buddy | H2 Economics", layout="wide")
 st.title("🎓 Case Buddy: H2 Economics Feedback Assistant")
 
-# Sidebar for Case Selection
+# 3. Sidebar for Case Selection
 selected_case_title = st.sidebar.selectbox("Select a Case Study", [c["title"] for c in CASE_STUDIES])
 case = next(c for c in CASE_STUDIES if c["title"] == selected_case_title)
 
-# Layout: Extracts on the left, Questions on the right
+# 4. Layout: Extracts on the left, Questions on the right
 col1, col2 = st.columns([1, 1])
 
 with col1:
@@ -54,7 +45,7 @@ with col2:
                 attempts = st.session_state[f"attempts_{q_id}"]
                 
                 # Socratic Prompting Logic
-                prompt = f"""
+                prompt_text = f"""
                 You are an expert H2 Economics Tutor for A-Level students. 
                 Question: {q['text']}
                 Mark Scheme: {case['mark_scheme'][q_id]}
@@ -62,16 +53,22 @@ with col2:
                 Attempt Number: {attempts}
                 
                 Guidelines:
-                - If attempts < 3: Use Socratic questioning. Point out gaps in analysis (e.g., missing $PED$ definition or $TR$ formula) without giving the answer.
+                - If attempts < 3: Use Socratic questioning. Point out gaps in analysis (e.g., missing PED definition or TR formula) without giving the answer.
                 - If attempts >= 3: Provide a detailed high-quality model answer and a rough mark estimate out of {q['marks']}.
                 - Always be encouraging but maintain high academic rigor.
                 """
                 
-                response = model.generate_content(prompt)
+                # Corrected AI generation call
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=prompt_text
+                )
                 st.session_state[f"feedback_{q_id}"] = response.text
 
         # Display Feedback
         if st.session_state[f"feedback_{q_id}"]:
             st.markdown("---")
+            st.markdown(f"**Attempt {st.session_state[f'attempts_{q_id}']}/3 Feedback:**")
+            st.write(st.session_state[f"feedback_{q_id}"])
             st.markdown(f"**Attempt {st.session_state[f'attempts_{q_id}']}/3 Feedback:**")
             st.write(st.session_state[f"feedback_{q_id}"])
