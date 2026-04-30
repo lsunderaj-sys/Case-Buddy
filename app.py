@@ -18,7 +18,7 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.header("Case Extracts & Data")
-    with st.expander("View Extracts", expanded=True):
+    with st.expander("View Extracts", expanded=False):
         for ext in case["extracts"]:
             st.write(ext)
             st.divider()
@@ -65,10 +65,9 @@ with col2:
                 )
                 st.session_state[f"feedback_{q_id}"] = response.text
 
-        # Display Feedback
+       # Display Feedback
         if st.session_state[f"feedback_{q_id}"]:
             st.markdown("---")
             st.markdown(f"**Attempt {st.session_state[f'attempts_{q_id}']}/3 Feedback:**")
             st.write(st.session_state[f"feedback_{q_id}"])
-            st.markdown(f"**Attempt {st.session_state[f'attempts_{q_id}']}/3 Feedback:**")
-            st.write(st.session_state[f"feedback_{q_id}"])
+            # DELETE THE SECOND COPY OF THESE LINES BELOW
